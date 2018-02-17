@@ -2,14 +2,14 @@
   "name": "react-native-js-signature",
   "description": "Pure JS implementation of react-native signature pad",
   "version": "0.0.1",
-  "main": "src/index.js",
-  "typings": "src/index.d.ts",
   "license": "MIT",
   "author": "Jonas Bajorinas",
   "repository": {
     "type": "git",
     "url": "https://github.com/JonasBAJ/react-native-js-signature"
   },
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
   "scripts": {
     "build": "rm -rf ./dist && node ./node_modules/.bin/tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
