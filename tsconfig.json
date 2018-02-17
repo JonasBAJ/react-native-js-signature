@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es5",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "module": "commonjs",
+    "jsx": "react-native",
+    "experimentalDecorators": true,
+    "lib": [
+      "dom",
+      "es5",
+      "es6",
+      "scripthost"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "react-native-js-signature",
+  "description": "Pure JS implementation of react-native signature pad",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "license": "MIT",
+  "author": "Jonas Bajorinas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JonasBAJ/react-native-js-signature"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && node ./node_modules/.bin/tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/react": "*",
+    "@types/react-native": ">=0.45.0",
+    "react": "*",
+    "react-native": ">=0.45.0",
+    "tsc": "^1.20150623.0",
+    "tslint": "^5.9.1",
+    "typescript": ">=2"
+  },
+  "peerDependencies": {
+    "react-native": ">=0.45.0",
+    "typescript": ">=2"
+  }
+}

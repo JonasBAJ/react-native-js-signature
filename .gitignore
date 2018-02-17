@@ -1,0 +1,15 @@
+# OSX
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# prod
+dist/
+build/
+
+# NPM
+/node_modules
+npm-debug.log
+yarn-error.log
