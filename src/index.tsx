@@ -12,7 +12,6 @@ import {
 import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
-  private html: string = ''
   private source: string = ''
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
 
@@ -33,7 +32,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     const { style, penColor, dataUrl } = this.props
     const { backgroundColor } = StyleSheet.flatten(style)
     this.injectableJS += application(penColor, backgroundColor, dataUrl)
-    this.html = htmlTemplate(this.injectableJS)
+    this.source = htmlTemplate(this.injectableJS)
   }
 
   public onMessage(event: any) {

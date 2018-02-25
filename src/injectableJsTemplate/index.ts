@@ -1,8 +1,7 @@
-import * as errorHandler from './errorHandler'
-import * as nativeCodeExecutor from './executeNativeFunction'
-import * as signaturePad from './signaturePad'
-
 import application from './application'
+import errorHandler from './errorHandler'
+import nativeCodeExecutor from './executeNativeFunction'
+import signaturePad from './signaturePad'
 
 export {
   application,
