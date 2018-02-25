@@ -1,6 +1,7 @@
 /// <reference types="react" />
 import * as React from 'react';
 import { ISignaturePadProps, IState } from './index.d';
+import { NativeSyntheticEvent, WebViewMessageEventData } from "react-native";
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
     private source;
     private injectableJS;
@@ -12,10 +13,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
      * to the React Native app, the JS is re-injected every time a stroke is drawn.
      */
     componentWillMount(): void;
-    onMessage(event: any): void;
+    onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>): void;
     render(): JSX.Element;
-    private bridgeJSError(error);
-    private bridgeFinishedStroke(event);
+    private finishedStrokeBridge(event);
     private onNavigationChange(event);
     private attemptToExecuteNativeFunctionFromWebViewMessage(message);
     /**
@@ -24,4 +24,5 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
      * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
      */
     private parseMessageFromWebViewNavigationChange(newUrl);
+    private jsErrorBridge(error);
 }

@@ -39,20 +39,14 @@ var SignaturePad = /** @class */ (function (_super) {
     };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);
-        this.bridgeFinishedStroke(base64DataUrl);
+        this.finishedStrokeBridge(base64DataUrl);
     };
     SignaturePad.prototype.render = function () {
         var _this = this;
         var style = this.props.style;
-        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.bridgeJSError(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
-    SignaturePad.prototype.bridgeJSError = function (error) {
-        var onError = this.props.onError;
-        if (typeof onError === 'function') {
-            onError({ error: error });
-        }
-    };
-    SignaturePad.prototype.bridgeFinishedStroke = function (event) {
+    SignaturePad.prototype.finishedStrokeBridge = function (event) {
         var onChange = this.props.onChange;
         this.setState({ base64Data: event });
         if (typeof onChange === 'function') {
@@ -65,7 +59,7 @@ var SignaturePad = /** @class */ (function (_super) {
     SignaturePad.prototype.attemptToExecuteNativeFunctionFromWebViewMessage = function (message) {
         if (message.executeFunction && message.arguments) {
             var parsedArguments = JSON.parse(message.arguments);
-            var reference = "bridge" + message.executeFunction;
+            var reference = message.executeFunction + 'Bridge';
             var fnRef = reference in this ? this[reference] : null;
             if (typeof fnRef === "function") {
                 fnRef.apply(this, [parsedArguments]);
@@ -87,11 +81,11 @@ var SignaturePad = /** @class */ (function (_super) {
             return;
         }
         var regexFindAllSubmittedParameters = /&(.*?)&/g;
-        var parameters = {};
         var parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl);
         if (!parameterMatch) {
             return;
         }
+        var parameters = {};
         while (parameterMatch) {
             //For example executeFunction=jsError or arguments=...
             var parameterPair = parameterMatch[1];
@@ -103,6 +97,12 @@ var SignaturePad = /** @class */ (function (_super) {
         }
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
             console.warn({ parameters: parameters, hashUrl: hashUrl }, "Received an unknown set of parameters from WebView");
+        }
+    };
+    SignaturePad.prototype.jsErrorBridge = function (error) {
+        var onError = this.props.onError;
+        if (typeof onError === 'function') {
+            onError({ error: error });
         }
     };
     return SignaturePad;

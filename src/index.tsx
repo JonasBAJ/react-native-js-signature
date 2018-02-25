@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { ISignaturePadProps, IState } from './index.d'
-import { StyleSheet, View, WebView } from "react-native"
+import { NativeSyntheticEvent, NativeTouchEvent, StyleSheet, View, WebView, WebViewMessageEventData, WebViewProperties } from "react-native"
 import {
   application,
   errorHandler,
@@ -35,9 +35,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     this.source = htmlTemplate(this.injectableJS)
   }
 
-  public onMessage(event: any) {
+  public onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>) {
     const base64DataUrl = JSON.parse(event.nativeEvent.data)
-    this.bridgeFinishedStroke(base64DataUrl)
+    this.finishedStrokeBridge(base64DataUrl)
   }
 
   public render() {
@@ -48,21 +48,14 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         javaScriptEnabled={true}
         source={{ html: this.source }}
         onMessage={e => this.onMessage(e)}
-        onError={e => this.bridgeJSError(e)}
+        onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
         onNavigationStateChange={e => this.onNavigationChange(e)}
       />
     )
   }
 
-  private bridgeJSError(error: any) {
-    const { onError } = this.props
-    if (typeof onError === 'function') {
-      onError({ error })
-    }
-  }
-
-  private bridgeFinishedStroke(event: any) {
+  private finishedStrokeBridge(event: any) {
     const { onChange } = this.props
     this.setState({ base64Data: event })
     if (typeof onChange === 'function') {
@@ -77,7 +70,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
   private attemptToExecuteNativeFunctionFromWebViewMessage(message: any) {
     if (message.executeFunction && message.arguments) {
       const parsedArguments = JSON.parse(message.arguments)
-      const reference: string = "bridge" + (message.executeFunction as string)
+      const reference: string = (message.executeFunction as string) + 'Bridge'
 
       const fnRef: any = reference in this ? (this as any)[reference] : null
 
@@ -103,24 +96,23 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
       return
     }
 
-    const regexFindAllSubmittedParameters = /&(.*?)&/g;
-
-    const parameters: any = {};
-    let parameterMatch: any = regexFindAllSubmittedParameters.exec(hashUrl);
+    const regexFindAllSubmittedParameters = /&(.*?)&/g
+    let parameterMatch: any = regexFindAllSubmittedParameters.exec(hashUrl)
     if (!parameterMatch) {
-      return;
+      return
     }
 
+    const parameters: any = {}
     while (parameterMatch) {
       //For example executeFunction=jsError or arguments=...
       const parameterPair = parameterMatch[1]
 
-      const parameterPairSplit = parameterPair.split("<-");
+      const parameterPairSplit = parameterPair.split("<-")
       if (parameterPairSplit.length === 2) {
-        parameters[parameterPairSplit[0]] = parameterPairSplit[1];
+        parameters[parameterPairSplit[0]] = parameterPairSplit[1]
       }
 
-      parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl);
+      parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl)
     }
 
     if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
@@ -128,6 +120,13 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         { parameters, hashUrl },
         "Received an unknown set of parameters from WebView"
       )
+    }
+  }
+
+  private jsErrorBridge(error: any) {
+    const { onError } = this.props
+    if (typeof onError === 'function') {
+      onError({ error })
     }
   }
 }
