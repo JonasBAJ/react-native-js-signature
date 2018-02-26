@@ -19,6 +19,7 @@ var SignaturePad = /** @class */ (function (_super) {
     function SignaturePad(props) {
         var _this = _super.call(this, props) || this;
         _this.source = '';
+        _this.reParameters = /&(.*?)&/g;
         _this.injectableJS = "" + injectableJsTemplate_1.nativeCodeExecutor + injectableJsTemplate_1.errorHandler + injectableJsTemplate_1.signaturePad;
         _this.state = {
             base64Data: props.dataUrl || ''
@@ -46,13 +47,6 @@ var SignaturePad = /** @class */ (function (_super) {
         var style = this.props.style;
         return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
-    SignaturePad.prototype.finishedStrokeBridge = function (event) {
-        var onChange = this.props.onChange;
-        this.setState({ base64Data: event });
-        if (typeof onChange === 'function') {
-            onChange(event);
-        }
-    };
     SignaturePad.prototype.onNavigationChange = function (event) {
         this.parseMessageFromWebViewNavigationChange(unescape(event.url));
     };
@@ -60,7 +54,9 @@ var SignaturePad = /** @class */ (function (_super) {
         if (message.executeFunction && message.arguments) {
             var parsedArguments = JSON.parse(message.arguments);
             var reference = message.executeFunction + 'Bridge';
-            var fnRef = reference in this ? this[reference] : null;
+            var fnRef = reference in this
+                ? this[reference]
+                : null;
             if (typeof fnRef === "function") {
                 fnRef.apply(this, [parsedArguments]);
                 return true;
@@ -75,28 +71,25 @@ var SignaturePad = /** @class */ (function (_super) {
      */
     SignaturePad.prototype.parseMessageFromWebViewNavigationChange = function (newUrl) {
         var hashUrlIndex = newUrl.lastIndexOf("#");
-        var hashUrl = newUrl.substring(hashUrlIndex);
-        var decodedUrl = decodeURIComponent(hashUrl);
-        if (hashUrlIndex === -1) {
-            return;
-        }
-        var regexFindAllSubmittedParameters = /&(.*?)&/g;
-        var parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl);
-        if (!parameterMatch) {
-            return;
-        }
-        var parameters = {};
-        while (parameterMatch) {
-            //For example executeFunction=jsError or arguments=...
-            var parameterPair = parameterMatch[1];
-            var parameterPairSplit = parameterPair.split("<-");
-            if (parameterPairSplit.length === 2) {
-                parameters[parameterPairSplit[0]] = parameterPairSplit[1];
+        if (hashUrlIndex !== -1) {
+            var parameters = {};
+            var hashUrl = newUrl.substring(hashUrlIndex);
+            var decodedUrl = decodeURIComponent(hashUrl);
+            var parameterMatch = this.parseParameters(hashUrl);
+            if (parameterMatch instanceof Array && parameterMatch.length > 2) {
+                while (parameterMatch) {
+                    //For example executeFunction=jsError or arguments=...
+                    var parameterPair = parameterMatch[1];
+                    var parameterPairSplit = parameterPair.split("<-");
+                    if (parameterPairSplit.length === 2) {
+                        parameters[parameterPairSplit[0]] = parameterPairSplit[1];
+                    }
+                    parameterMatch = this.parseParameters(hashUrl);
+                }
+                if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
+                    console.warn({ parameters: parameters, hashUrl: hashUrl }, "Received an unknown set of parameters from WebView");
+                }
             }
-            parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl);
-        }
-        if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
-            console.warn({ parameters: parameters, hashUrl: hashUrl }, "Received an unknown set of parameters from WebView");
         }
     };
     SignaturePad.prototype.jsErrorBridge = function (error) {
@@ -104,6 +97,16 @@ var SignaturePad = /** @class */ (function (_super) {
         if (typeof onError === 'function') {
             onError({ error: error });
         }
+    };
+    SignaturePad.prototype.finishedStrokeBridge = function (event) {
+        var onChange = this.props.onChange;
+        this.setState({ base64Data: event });
+        if (typeof onChange === 'function') {
+            onChange(event);
+        }
+    };
+    SignaturePad.prototype.parseParameters = function (parametersUrl) {
+        return this.reParameters.exec(parametersUrl);
     };
     return SignaturePad;
 }(React.Component));

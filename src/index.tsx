@@ -13,6 +13,7 @@ import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
   private source: string = ''
+  private reParameters: RegExp = /&(.*?)&/g
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
 
   constructor(props: ISignaturePadProps) {
@@ -55,14 +56,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     )
   }
 
-  private finishedStrokeBridge(event: any) {
-    const { onChange } = this.props
-    this.setState({ base64Data: event })
-    if (typeof onChange === 'function') {
-      onChange(event)
-    }
-  }
-
   private onNavigationChange(event: any) {
     this.parseMessageFromWebViewNavigationChange(unescape(event.url))
   }
@@ -71,8 +64,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     if (message.executeFunction && message.arguments) {
       const parsedArguments = JSON.parse(message.arguments)
       const reference: string = (message.executeFunction as string) + 'Bridge'
-
-      const fnRef: any = reference in this ? (this as any)[reference] : null
+      const fnRef: () => void | null = reference in this
+        ? (this as any)[reference]
+        : null
 
       if (typeof fnRef === "function") {
         fnRef.apply(this, [parsedArguments])
@@ -89,37 +83,31 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
    */
   private parseMessageFromWebViewNavigationChange(newUrl: string) {
     const hashUrlIndex = newUrl.lastIndexOf("#")
-    const hashUrl = newUrl.substring(hashUrlIndex)
-    const decodedUrl = decodeURIComponent(hashUrl)
+    if (hashUrlIndex !== -1) {
+      const parameters: { [id: string]: string } = {}
+      const hashUrl: string = newUrl.substring(hashUrlIndex)
+      const decodedUrl: string = decodeURIComponent(hashUrl)
+      let parameterMatch: RegExpExecArray | null = this.parseParameters(hashUrl)
 
-    if (hashUrlIndex === -1) {
-      return
-    }
+      if (parameterMatch instanceof Array && parameterMatch.length > 2) {
+        while (parameterMatch) {
+          //For example executeFunction=jsError or arguments=...
+          const parameterPair = parameterMatch[1]
+          const parameterPairSplit = parameterPair.split("<-")
 
-    const regexFindAllSubmittedParameters = /&(.*?)&/g
-    let parameterMatch: any = regexFindAllSubmittedParameters.exec(hashUrl)
-    if (!parameterMatch) {
-      return
-    }
+          if (parameterPairSplit.length === 2) {
+            parameters[parameterPairSplit[0]] = parameterPairSplit[1]
+          }
+          parameterMatch = this.parseParameters(hashUrl)
+        }
 
-    const parameters: any = {}
-    while (parameterMatch) {
-      //For example executeFunction=jsError or arguments=...
-      const parameterPair = parameterMatch[1]
-
-      const parameterPairSplit = parameterPair.split("<-")
-      if (parameterPairSplit.length === 2) {
-        parameters[parameterPairSplit[0]] = parameterPairSplit[1]
+        if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
+          console.warn(
+            { parameters, hashUrl },
+            "Received an unknown set of parameters from WebView"
+          )
+        }
       }
-
-      parameterMatch = regexFindAllSubmittedParameters.exec(hashUrl)
-    }
-
-    if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
-      console.warn(
-        { parameters, hashUrl },
-        "Received an unknown set of parameters from WebView"
-      )
     }
   }
 
@@ -128,5 +116,17 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     if (typeof onError === 'function') {
       onError({ error })
     }
+  }
+
+  private finishedStrokeBridge(event: any) {
+    const { onChange } = this.props
+    this.setState({ base64Data: event })
+    if (typeof onChange === 'function') {
+      onChange(event)
+    }
+  }
+
+  private parseParameters(parametersUrl: string) {
+    return this.reParameters.exec(parametersUrl)
   }
 }

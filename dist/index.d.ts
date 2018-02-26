@@ -4,6 +4,7 @@ import { ISignaturePadProps, IState } from './index.d';
 import { NativeSyntheticEvent, WebViewMessageEventData } from "react-native";
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
     private source;
+    private reParameters;
     private injectableJS;
     constructor(props: ISignaturePadProps);
     /**
@@ -15,7 +16,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     componentWillMount(): void;
     onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>): void;
     render(): JSX.Element;
-    private finishedStrokeBridge(event);
     private onNavigationChange(event);
     private attemptToExecuteNativeFunctionFromWebViewMessage(message);
     /**
@@ -25,4 +25,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
      */
     private parseMessageFromWebViewNavigationChange(newUrl);
     private jsErrorBridge(error);
+    private finishedStrokeBridge(event);
+    private parseParameters(parametersUrl);
 }
