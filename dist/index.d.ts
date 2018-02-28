@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import * as React from 'react';
-import { ISignaturePadProps, IState } from './index.d';
+import { ISignaturePadProps, IState } from './types';
 import { NativeSyntheticEvent, WebViewMessageEventData } from "react-native";
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
     private source;

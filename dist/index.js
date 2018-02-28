@@ -100,7 +100,7 @@ var SignaturePad = /** @class */ (function (_super) {
     };
     SignaturePad.prototype.finishedStrokeBridge = function (event) {
         var onChange = this.props.onChange;
-        this.setState({ base64Data: event });
+        this.setState(event);
         if (typeof onChange === 'function') {
             onChange(event);
         }
