@@ -1,4 +1,4 @@
-export default function content(penWeigth?: number, penColor?: string, backgroundColor?: string, dataURL?: string): string {
+export default function content(minWidth?: number, maxWidth?: number, dotSize?: number, penColor?: string, backgroundColor?: string, dataURL?: string): string {
   return `
     var showSignaturePad = function (signaturePadCanvas, bodyWidth, bodyHeight) {
       /*We're rotating by 90% -> Flip X and Y*/
@@ -23,7 +23,9 @@ export default function content(penWeigth?: number, penColor?: string, backgroun
 
       var enableSignaturePadFunctionality = function () {
         var signaturePad = new SignaturePad(signaturePadCanvas, {
-          dotSize: ${penWeigth},
+          dotSize: ${dotSize},
+          minWidth: ${minWidth},
+          maxWidth: ${maxWidth},
           penColor: '${penColor || "black"}',
           backgroundColor: '${backgroundColor || "white"}',
           onEnd: function() { finishedStroke(signaturePad.toDataURL()); }

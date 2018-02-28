@@ -33,9 +33,9 @@ var SignaturePad = /** @class */ (function (_super) {
      * to the React Native app, the JS is re-injected every time a stroke is drawn.
      */
     SignaturePad.prototype.componentWillMount = function () {
-        var _a = this.props, style = _a.style, penColor = _a.penColor, penWeigth = _a.penWeigth, dataUrl = _a.dataUrl;
+        var _a = this.props, style = _a.style, penColor = _a.penColor, dotSize = _a.dotSize, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth, dataUrl = _a.dataUrl;
         var backgroundColor = react_native_1.StyleSheet.flatten(style).backgroundColor;
-        this.injectableJS += injectableJsTemplate_1.application(penWeigth, penColor, backgroundColor, dataUrl);
+        this.injectableJS += injectableJsTemplate_1.application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl);
         this.source = htmlTemplate_1.default(this.injectableJS);
     };
     SignaturePad.prototype.onMessage = function (event) {
