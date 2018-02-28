@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { ISignaturePadProps, IState } from './index.d'
+import { ISignaturePadProps, IState } from './types'
 import { NativeSyntheticEvent, NativeTouchEvent, StyleSheet, View, WebView, WebViewMessageEventData, WebViewProperties } from "react-native"
 import {
   application,
@@ -118,9 +118,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     }
   }
 
-  private finishedStrokeBridge(event: any) {
+  private finishedStrokeBridge(event: IState) {
     const { onChange } = this.props
-    this.setState({ base64Data: event })
+    this.setState(event)
     if (typeof onChange === 'function') {
       onChange(event)
     }

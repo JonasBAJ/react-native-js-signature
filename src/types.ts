@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-interface IState {
+export interface IState {
   base64Data: string | null
 }
 
