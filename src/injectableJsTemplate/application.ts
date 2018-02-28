@@ -24,8 +24,8 @@ export default function content(minWidth?: number, maxWidth?: number, dotSize?: 
       var enableSignaturePadFunctionality = function () {
         var signaturePad = new SignaturePad(signaturePadCanvas, {
           dotSize: ${dotSize},
-          minWidth: ${minWidth},
-          maxWidth: ${maxWidth},
+          minWidth: ${minWidth || 5},
+          maxWidth: ${maxWidth || 10},
           penColor: '${penColor || "black"}',
           backgroundColor: '${backgroundColor || "white"}',
           onEnd: function() { finishedStroke(signaturePad.toDataURL()); }
