@@ -288,7 +288,7 @@ export default `var SignaturePad = (function (document) {
   };
 
   SignaturePad.prototype._strokeWidth = function (velocity) {
-    return Math.max(30 / 1, 10);
+    return Math.max(30 / (velocity + 1), 10);
     // return Math.max(this.maxWidth / (velocity + 1), this.minWidth);
   };
 
