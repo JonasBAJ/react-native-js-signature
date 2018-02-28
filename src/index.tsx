@@ -30,9 +30,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
    * to the React Native app, the JS is re-injected every time a stroke is drawn.
    */
   public componentWillMount() {
-    const { style, penColor, dataUrl } = this.props
+    const { style, penColor, penWeigth, dataUrl } = this.props
     const { backgroundColor } = StyleSheet.flatten(style)
-    this.injectableJS += application(penColor, backgroundColor, dataUrl)
+    this.injectableJS += application(penWeigth, penColor, backgroundColor, dataUrl)
     this.source = htmlTemplate(this.injectableJS)
   }
 
