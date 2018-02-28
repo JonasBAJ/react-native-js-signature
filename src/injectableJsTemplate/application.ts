@@ -6,6 +6,10 @@ export default function content(
   backgroundColor?: string,
   dataURL?: string
 ): string {
+  console.log({
+    minWidth,
+    maxWidth,
+  })
   return `
     var showSignaturePad = function (signaturePadCanvas, bodyWidth, bodyHeight) {
       /*We're rotating by 90% -> Flip X and Y*/
