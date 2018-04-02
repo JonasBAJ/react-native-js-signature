@@ -36,7 +36,13 @@ var SignaturePad = /** @class */ (function (_super) {
         this.initWebView(this.props);
     };
     SignaturePad.prototype.componentWillReceiveProps = function (nextProps) {
-        this.initWebView(nextProps);
+        var _a = this.props, penColor = _a.penColor, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth;
+        var updateCanvas = nextProps.penColor !== penColor
+            || nextProps.strokeMaxWidth !== strokeMaxWidth
+            || nextProps.strokeMinWidth !== strokeMinWidth;
+        if (updateCanvas) {
+            this.initWebView(nextProps);
+        }
     };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);

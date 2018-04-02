@@ -34,7 +34,13 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
   }
 
   public componentWillReceiveProps(nextProps: ISignaturePadProps) {
-    this.initWebView(nextProps)
+    const { penColor, strokeMaxWidth, strokeMinWidth } = this.props
+    const updateCanvas = nextProps.penColor !== penColor
+      || nextProps.strokeMaxWidth !== strokeMaxWidth
+      || nextProps.strokeMinWidth !== strokeMinWidth
+    if (updateCanvas) {
+      this.initWebView(nextProps)
+    }
   }
 
   public onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>) {
