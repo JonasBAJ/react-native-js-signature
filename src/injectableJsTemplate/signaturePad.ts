@@ -1,4 +1,3 @@
-
 /**
  * Signature Pad v1.3.2
  * https://github.com/szimek/signature_pad
@@ -63,7 +62,7 @@ export default `var SignaturePad = (function (document) {
     this._reset();
     image.src = dataUrl;
     image.onload = function () {
-      self._ctx.drawImage(image, 0, 0, self._canvas.width, self._canvas.height);
+      self._ctx.drawImage(image, 700, 1053, self._canvas.width, self._canvas.height);
     };
     this._isEmpty = false;
   };

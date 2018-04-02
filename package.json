@@ -11,7 +11,7 @@
   "main": "dist/index.js",
   "typings": "src/index.d.ts",
   "scripts": {
-    "build": "rm -rf ./dist && node ./node_modules/.bin/tsc",
+    "build": "rm -rf ./dist && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
