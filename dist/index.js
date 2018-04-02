@@ -33,10 +33,10 @@ var SignaturePad = /** @class */ (function (_super) {
      * to the React Native app, the JS is re-injected every time a stroke is drawn.
      */
     SignaturePad.prototype.componentWillMount = function () {
-        var _a = this.props, style = _a.style, penColor = _a.penColor, dotSize = _a.dotSize, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth, dataUrl = _a.dataUrl;
-        var backgroundColor = react_native_1.StyleSheet.flatten(style).backgroundColor;
-        this.injectableJS += injectableJsTemplate_1.application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl);
-        this.source = htmlTemplate_1.default(this.injectableJS);
+        this.initWebView(this.props);
+    };
+    SignaturePad.prototype.componentWillReceiveProps = function (nextProps) {
+        this.initWebView(nextProps);
     };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);
@@ -46,6 +46,12 @@ var SignaturePad = /** @class */ (function (_super) {
         var _this = this;
         var style = this.props.style;
         return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+    };
+    SignaturePad.prototype.initWebView = function (props) {
+        var style = props.style, penColor = props.penColor, dotSize = props.dotSize, strokeMaxWidth = props.strokeMaxWidth, strokeMinWidth = props.strokeMinWidth, dataUrl = props.dataUrl;
+        var backgroundColor = react_native_1.StyleSheet.flatten(style).backgroundColor;
+        this.injectableJS += injectableJsTemplate_1.application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl);
+        this.source = htmlTemplate_1.default(this.injectableJS);
     };
     SignaturePad.prototype.onNavigationChange = function (event) {
         this.parseMessageFromWebViewNavigationChange(unescape(event.url));

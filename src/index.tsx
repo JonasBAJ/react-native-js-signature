@@ -30,10 +30,11 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
    * to the React Native app, the JS is re-injected every time a stroke is drawn.
    */
   public componentWillMount() {
-    const { style, penColor, dotSize, strokeMaxWidth, strokeMinWidth, dataUrl } = this.props
-    const { backgroundColor } = StyleSheet.flatten(style)
-    this.injectableJS += application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl)
-    this.source = htmlTemplate(this.injectableJS)
+    this.initWebView(this.props)
+  }
+
+  public componentWillReceiveProps(nextProps: ISignaturePadProps) {
+    this.initWebView(nextProps)
   }
 
   public onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>) {
@@ -54,6 +55,13 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         onNavigationStateChange={e => this.onNavigationChange(e)}
       />
     )
+  }
+
+  private initWebView(props: ISignaturePadProps) {
+    const { style, penColor, dotSize, strokeMaxWidth, strokeMinWidth, dataUrl } = props
+    const { backgroundColor } = StyleSheet.flatten(style)
+    this.injectableJS += application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl)
+    this.source = htmlTemplate(this.injectableJS)
   }
 
   private onNavigationChange(event: any) {

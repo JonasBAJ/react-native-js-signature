@@ -14,8 +14,10 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
      * to the React Native app, the JS is re-injected every time a stroke is drawn.
      */
     componentWillMount(): void;
+    componentWillReceiveProps(nextProps: ISignaturePadProps): void;
     onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>): void;
     render(): JSX.Element;
+    private initWebView(props);
     private onNavigationChange(event);
     private attemptToExecuteNativeFunctionFromWebViewMessage(message);
     /**
