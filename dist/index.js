@@ -57,7 +57,7 @@ var SignaturePad = /** @class */ (function (_super) {
             var fnRef = reference in this
                 ? this[reference]
                 : null;
-            if (typeof fnRef === "function") {
+            if (typeof fnRef === 'function') {
                 fnRef.apply(this, [parsedArguments]);
                 return true;
             }
@@ -70,7 +70,7 @@ var SignaturePad = /** @class */ (function (_super) {
      * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
      */
     SignaturePad.prototype.parseMessageFromWebViewNavigationChange = function (newUrl) {
-        var hashUrlIndex = newUrl.lastIndexOf("#");
+        var hashUrlIndex = newUrl.lastIndexOf('#');
         if (hashUrlIndex !== -1) {
             var parameters = {};
             var hashUrl = newUrl.substring(hashUrlIndex);
@@ -78,16 +78,16 @@ var SignaturePad = /** @class */ (function (_super) {
             var parameterMatch = this.parseParameters(hashUrl);
             if (parameterMatch instanceof Array && parameterMatch.length > 2) {
                 while (parameterMatch) {
-                    //For example executeFunction=jsError or arguments=...
+                    // For example executeFunction=jsError or arguments=...
                     var parameterPair = parameterMatch[1];
-                    var parameterPairSplit = parameterPair.split("<-");
+                    var parameterPairSplit = parameterPair.split('<-');
                     if (parameterPairSplit.length === 2) {
                         parameters[parameterPairSplit[0]] = parameterPairSplit[1];
                     }
                     parameterMatch = this.parseParameters(hashUrl);
                 }
                 if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
-                    console.warn({ parameters: parameters, hashUrl: hashUrl }, "Received an unknown set of parameters from WebView");
+                    console.warn({ parameters: parameters, hashUrl: hashUrl }, 'Received an unknown set of parameters from WebView');
                 }
             }
         }

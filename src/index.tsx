@@ -1,13 +1,13 @@
 import * as React from 'react'
 
-import { ISignaturePadProps, IState } from './types'
-import { NativeSyntheticEvent, NativeTouchEvent, StyleSheet, View, WebView, WebViewMessageEventData, WebViewProperties } from "react-native"
+import { NativeSyntheticEvent, StyleSheet, WebView, WebViewMessageEventData } from 'react-native'
 import {
   application,
   errorHandler,
   nativeCodeExecutor,
   signaturePad,
 } from './injectableJsTemplate'
+import { ISignaturePadProps, IState } from './types'
 
 import htmlTemplate from './htmlTemplate'
 
@@ -68,7 +68,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         ? (this as any)[reference]
         : null
 
-      if (typeof fnRef === "function") {
+      if (typeof fnRef === 'function') {
         fnRef.apply(this, [parsedArguments])
         return true
       }
@@ -82,7 +82,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
    * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
    */
   private parseMessageFromWebViewNavigationChange(newUrl: string) {
-    const hashUrlIndex = newUrl.lastIndexOf("#")
+    const hashUrlIndex = newUrl.lastIndexOf('#')
     if (hashUrlIndex !== -1) {
       const parameters: { [id: string]: string } = {}
       const hashUrl: string = newUrl.substring(hashUrlIndex)
@@ -91,9 +91,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
 
       if (parameterMatch instanceof Array && parameterMatch.length > 2) {
         while (parameterMatch) {
-          //For example executeFunction=jsError or arguments=...
+          // For example executeFunction=jsError or arguments=...
           const parameterPair = parameterMatch[1]
-          const parameterPairSplit = parameterPair.split("<-")
+          const parameterPairSplit = parameterPair.split('<-')
 
           if (parameterPairSplit.length === 2) {
             parameters[parameterPairSplit[0]] = parameterPairSplit[1]
@@ -104,7 +104,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
           console.warn(
             { parameters, hashUrl },
-            "Received an unknown set of parameters from WebView"
+            'Received an unknown set of parameters from WebView'
           )
         }
       }

@@ -62,8 +62,7 @@ export default `var SignaturePad = (function (document) {
     this._reset();
     image.src = dataUrl;
     image.onload = function () {
-      self._ctx.drawImage(image, 0, 0, 1053, 700);
-      // self._ctx.drawImage(image, 0, 0, self._canvas.width, self._canvas.height);
+      self._ctx.drawImage(image, 0, 0, self._canvas.width, self._canvas.height);
     };
     this._isEmpty = false;
   };
