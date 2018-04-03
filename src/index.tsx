@@ -67,15 +67,16 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
 
   public render() {
     const { style } = this.props
+    console.log(this.source)
     return (
       <WebView
         style={style}
         javaScriptEnabled={true}
         ref={(r: any) => this.ref = r}
+        source={{ html: this.source }}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
-        source={{ html: this.source, baseUrl: '' }}
         onNavigationStateChange={e => this.onNavigationChange(e)}
       />
     )
