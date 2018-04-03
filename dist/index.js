@@ -51,6 +51,7 @@ var SignaturePad = /** @class */ (function (_super) {
     SignaturePad.prototype.render = function () {
         var _this = this;
         var style = this.props.style;
+        console.log(1);
         return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {

@@ -50,6 +50,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
 
   public render() {
     const { style } = this.props
+    console.log(1)
     return (
       <WebView
         style={style}
