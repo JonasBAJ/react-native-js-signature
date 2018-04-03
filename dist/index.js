@@ -50,8 +50,8 @@ var SignaturePad = /** @class */ (function (_super) {
         var reloadWebView = prevProps.penColor !== penColor
             || prevProps.strokeMaxWidth !== strokeMaxWidth
             || prevProps.strokeMinWidth !== strokeMinWidth;
-        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
-            this.ref.reload();
+        if (reloadWebView && react_native_1.Platform.OS === 'android') {
+            this.forceUpdate();
         }
     };
     SignaturePad.prototype.onMessage = function (event) {
