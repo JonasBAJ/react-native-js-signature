@@ -55,8 +55,8 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     const reloadWebView = prevProps.penColor !== penColor
       || prevProps.strokeMaxWidth !== strokeMaxWidth
       || prevProps.strokeMinWidth !== strokeMinWidth
-    if (reloadWebView && Platform.OS === 'android' && this.ref && this.ref.postMessage) {
-      this.ref.postMessage('new color')
+    if (reloadWebView && Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
+      this.ref.reload()
     }
   }
 
@@ -67,16 +67,15 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
 
   public render() {
     const { style } = this.props
-    console.log(this.source)
     return (
       <WebView
         style={style}
         javaScriptEnabled={true}
-        source={{ html: this.source }}
         ref={(r: any) => this.ref = r}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
+        source={{ html: this.source, baseUrl: '' }}
         onNavigationStateChange={e => this.onNavigationChange(e)}
       />
     )

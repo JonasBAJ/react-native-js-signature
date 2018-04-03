@@ -50,8 +50,8 @@ var SignaturePad = /** @class */ (function (_super) {
         var reloadWebView = prevProps.penColor !== penColor
             || prevProps.strokeMaxWidth !== strokeMaxWidth
             || prevProps.strokeMinWidth !== strokeMinWidth;
-        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && this.ref.postMessage) {
-            this.ref.postMessage('new color');
+        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
+            this.ref.reload();
         }
     };
     SignaturePad.prototype.onMessage = function (event) {
@@ -61,8 +61,7 @@ var SignaturePad = /** @class */ (function (_super) {
     SignaturePad.prototype.render = function () {
         var _this = this;
         var style = this.props.style;
-        console.log(this.source);
-        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+        return (<react_native_1.WebView style={style} javaScriptEnabled={true} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} source={{ html: this.source, baseUrl: '' }} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
         var style = props.style, penColor = props.penColor, dotSize = props.dotSize, strokeMaxWidth = props.strokeMaxWidth, strokeMinWidth = props.strokeMinWidth, dataUrl = props.dataUrl;
