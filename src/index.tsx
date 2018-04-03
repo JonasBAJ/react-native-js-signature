@@ -18,7 +18,6 @@ import { ISignaturePadProps, IState } from './types'
 import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
-  private ref: any = null
   private source: string = ''
   private reParameters: RegExp = /&(.*?)&/g
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
@@ -55,8 +54,8 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     const reloadWebView = prevProps.penColor !== penColor
       || prevProps.strokeMaxWidth !== strokeMaxWidth
       || prevProps.strokeMinWidth !== strokeMinWidth
-    if (reloadWebView && Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
-      this.ref.reload()
+    if (reloadWebView && Platform.OS === 'android') {
+      this.forceUpdate()
     }
   }
 
@@ -73,7 +72,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
         style={style}
         javaScriptEnabled={true}
         source={{ html: this.source }}
-        ref={(r: any) => this.ref = r}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
@@ -134,6 +132,8 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
           }
           parameterMatch = this.parseParameters(decodedUrl)
         }
+
+        console.log(parameterMatch)
 
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
           console.warn(

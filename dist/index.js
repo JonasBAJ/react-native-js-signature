@@ -18,7 +18,6 @@ var SignaturePad = /** @class */ (function (_super) {
     __extends(SignaturePad, _super);
     function SignaturePad(props) {
         var _this = _super.call(this, props) || this;
-        _this.ref = null;
         _this.source = '';
         _this.reParameters = /&(.*?)&/g;
         _this.injectableJS = "" + injectableJsTemplate_1.nativeCodeExecutor + injectableJsTemplate_1.errorHandler + injectableJsTemplate_1.signaturePad;
@@ -50,8 +49,8 @@ var SignaturePad = /** @class */ (function (_super) {
         var reloadWebView = prevProps.penColor !== penColor
             || prevProps.strokeMaxWidth !== strokeMaxWidth
             || prevProps.strokeMinWidth !== strokeMinWidth;
-        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
-            this.ref.reload();
+        if (reloadWebView && react_native_1.Platform.OS === 'android') {
+            this.forceUpdate();
         }
     };
     SignaturePad.prototype.onMessage = function (event) {
@@ -62,7 +61,7 @@ var SignaturePad = /** @class */ (function (_super) {
         var _this = this;
         var _a = this.props, style = _a.style, penColor = _a.penColor;
         console.log(penColor);
-        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
         var style = props.style, penColor = props.penColor, dotSize = props.dotSize, strokeMaxWidth = props.strokeMaxWidth, strokeMinWidth = props.strokeMinWidth, dataUrl = props.dataUrl;
@@ -109,6 +108,7 @@ var SignaturePad = /** @class */ (function (_super) {
                     }
                     parameterMatch = this.parseParameters(decodedUrl);
                 }
+                console.log(parameterMatch);
                 if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
                     console.warn({ parameters: parameters, hashUrl: hashUrl }, 'Received an unknown set of parameters from WebView');
                 }
