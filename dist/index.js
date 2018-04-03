@@ -49,9 +49,8 @@ var SignaturePad = /** @class */ (function (_super) {
         var _a = this.props, penColor = _a.penColor, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth;
         var reloadWebView = prevProps.penColor !== penColor
             || prevProps.strokeMaxWidth !== strokeMaxWidth
-            || prevProps.strokeMinWidth !== strokeMinWidth
-            || react_native_1.Platform.OS === 'android';
-        if (reloadWebView && this.ref && typeof this.ref.reload === 'function') {
+            || prevProps.strokeMinWidth !== strokeMinWidth;
+        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
             this.ref.reload();
         }
     };

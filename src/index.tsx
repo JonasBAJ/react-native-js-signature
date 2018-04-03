@@ -56,8 +56,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     const reloadWebView = prevProps.penColor !== penColor
       || prevProps.strokeMaxWidth !== strokeMaxWidth
       || prevProps.strokeMinWidth !== strokeMinWidth
-      || Platform.OS === 'android'
-    if (reloadWebView && this.ref && typeof this.ref.reload === 'function') {
+    if (reloadWebView && Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
       this.ref.reload()
     }
   }
