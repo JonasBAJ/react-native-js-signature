@@ -56,7 +56,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
       || prevProps.strokeMaxWidth !== strokeMaxWidth
       || prevProps.strokeMinWidth !== strokeMinWidth
     if (reloadWebView && Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
-      this.ref.reload()
+      this.ref.postMessage({ penColor })
     }
   }
 
@@ -67,7 +67,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
 
   public render() {
     const { style } = this.props
-    console.log(this.source)
     return (
       <WebView
         style={style}
@@ -134,6 +133,8 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
           }
           parameterMatch = this.parseParameters(decodedUrl)
         }
+
+        console.log(parameters)
 
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
           console.warn(

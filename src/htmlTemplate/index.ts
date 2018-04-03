@@ -2,11 +2,14 @@ export default function content(script: string): string {
   return `<html>
     <style>
       * {
-          margin:0;
-          padding:0;
+        margin:0;
+        padding:0;
       }
       canvas {
-        position:absolute;transform:translateZ(0);
+        margin-top: 0;
+        margin-left: 0;
+        position: absolute;
+        transform: translateZ(0);
         /* In case the React Transformation is not performant, we'll fall back to this one
         transform-origin:left top;
         -ms-transform-origin:left top;
@@ -17,7 +20,7 @@ export default function content(script: string): string {
       }
     </style>
     <body>
-      <canvas style="margin-left: 0; margin-top: 0;"></canvas>
+      <canvas></canvas>
       <script>${script}</script>
     </body>
   </html>`

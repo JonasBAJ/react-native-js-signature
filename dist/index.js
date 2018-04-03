@@ -51,7 +51,7 @@ var SignaturePad = /** @class */ (function (_super) {
             || prevProps.strokeMaxWidth !== strokeMaxWidth
             || prevProps.strokeMinWidth !== strokeMinWidth;
         if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
-            this.ref.reload();
+            this.ref.postMessage({ penColor: penColor });
         }
     };
     SignaturePad.prototype.onMessage = function (event) {
@@ -61,7 +61,6 @@ var SignaturePad = /** @class */ (function (_super) {
     SignaturePad.prototype.render = function () {
         var _this = this;
         var style = this.props.style;
-        console.log(this.source);
         return (<react_native_1.WebView style={style} javaScriptEnabled={true} ref={function (r) { return _this.ref = r; }} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
@@ -109,6 +108,7 @@ var SignaturePad = /** @class */ (function (_super) {
                     }
                     parameterMatch = this.parseParameters(decodedUrl);
                 }
+                console.log(parameters);
                 if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
                     console.warn({ parameters: parameters, hashUrl: hashUrl }, 'Received an unknown set of parameters from WebView');
                 }
