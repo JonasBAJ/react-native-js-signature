@@ -60,8 +60,8 @@ var SignaturePad = /** @class */ (function (_super) {
     };
     SignaturePad.prototype.render = function () {
         var _this = this;
-        var _a = this.props, style = _a.style, penColor = _a.penColor;
-        console.log(penColor);
+        var style = this.props.style;
+        console.log(this.source);
         return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
@@ -93,7 +93,6 @@ var SignaturePad = /** @class */ (function (_super) {
      * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
      */
     SignaturePad.prototype.parseMessageFromWebViewNavigationChange = function (newUrl) {
-        console.log(newUrl);
         var hashUrlIndex = newUrl.lastIndexOf('#');
         if (hashUrlIndex !== -1) {
             var parameters = {};

@@ -33,8 +33,8 @@ export default function content(
           dotSize: ${dotSize},
           minWidth: ${minWidth || 1},
           maxWidth: ${maxWidth || 4},
-          penColor: '${penColor || "black"}',
-          backgroundColor: '${backgroundColor || "white"}',
+          penColor: '${penColor || 'black'}',
+          backgroundColor: '${backgroundColor || 'white'}',
           onEnd: function() { finishedStroke(signaturePad.toDataURL()); }
         });
         /* signaturePad.translateMouseCoordinates = function (point) {
