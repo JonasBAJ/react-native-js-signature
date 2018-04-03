@@ -18,6 +18,7 @@ var SignaturePad = /** @class */ (function (_super) {
     __extends(SignaturePad, _super);
     function SignaturePad(props) {
         var _this = _super.call(this, props) || this;
+        _this.ref = null;
         _this.source = '';
         _this.reParameters = /&(.*?)&/g;
         _this.injectableJS = "" + injectableJsTemplate_1.nativeCodeExecutor + injectableJsTemplate_1.errorHandler + injectableJsTemplate_1.signaturePad;
@@ -44,14 +45,24 @@ var SignaturePad = /** @class */ (function (_super) {
             this.initWebView(nextProps);
         }
     };
+    SignaturePad.prototype.componentDidUpdate = function (prevProps) {
+        var _a = this.props, penColor = _a.penColor, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth;
+        var reloadWebView = prevProps.penColor !== penColor
+            || prevProps.strokeMaxWidth !== strokeMaxWidth
+            || prevProps.strokeMinWidth !== strokeMinWidth;
+        if (reloadWebView && react_native_1.Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
+            this.ref.reload();
+        }
+    };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);
         this.finishedStrokeBridge(base64DataUrl);
     };
     SignaturePad.prototype.render = function () {
         var _this = this;
-        var style = this.props.style;
-        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+        var _a = this.props, style = _a.style, penColor = _a.penColor;
+        console.log(penColor);
+        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
         var style = props.style, penColor = props.penColor, dotSize = props.dotSize, strokeMaxWidth = props.strokeMaxWidth, strokeMinWidth = props.strokeMinWidth, dataUrl = props.dataUrl;

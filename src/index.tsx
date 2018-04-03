@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import {
   NativeSyntheticEvent,
+  Platform,
   StyleSheet,
   WebView,
   WebViewMessageEventData,
@@ -17,6 +18,7 @@ import { ISignaturePadProps, IState } from './types'
 import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
+  private ref: any = null
   private source: string = ''
   private reParameters: RegExp = /&(.*?)&/g
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
@@ -48,18 +50,30 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     }
   }
 
+  public componentDidUpdate(prevProps: ISignaturePadProps) {
+    const { penColor, strokeMaxWidth, strokeMinWidth } = this.props
+    const reloadWebView = prevProps.penColor !== penColor
+      || prevProps.strokeMaxWidth !== strokeMaxWidth
+      || prevProps.strokeMinWidth !== strokeMinWidth
+    if (reloadWebView && Platform.OS === 'android' && this.ref && typeof this.ref.reload === 'function') {
+      this.ref.reload()
+    }
+  }
+
   public onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>) {
     const base64DataUrl = JSON.parse(event.nativeEvent.data)
     this.finishedStrokeBridge(base64DataUrl)
   }
 
   public render() {
-    const { style } = this.props
+    const { style, penColor } = this.props
+    console.log(penColor)
     return (
       <WebView
         style={style}
         javaScriptEnabled={true}
         source={{ html: this.source }}
+        ref={(r: any) => this.ref = r}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
