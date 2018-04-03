@@ -1,6 +1,13 @@
 import * as React from 'react'
 
-import { NativeSyntheticEvent, StyleSheet, WebView, WebViewMessageEventData, Platform } from 'react-native'
+import {
+  NativeSyntheticEvent,
+  StyleSheet,
+  WebView,
+  WebViewMessageEventData,
+  Platform,
+  WebViewStatic
+} from 'react-native'
 import {
   application,
   errorHandler,
@@ -41,6 +48,17 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
       || nextProps.strokeMinWidth !== strokeMinWidth
     if (updateCanvas) {
       this.initWebView(nextProps)
+    }
+  }
+
+  public componentDidUpdate(prevProps: ISignaturePadProps) {
+    const { penColor, strokeMaxWidth, strokeMinWidth } = this.props
+    const reloadWebView = prevProps.penColor !== penColor
+      || prevProps.strokeMaxWidth !== strokeMaxWidth
+      || prevProps.strokeMinWidth !== strokeMinWidth
+      || Platform.OS === 'android'
+    if (reloadWebView && this.ref && typeof this.ref.reload === 'function') {
+      this.ref.reload()
     }
   }
 

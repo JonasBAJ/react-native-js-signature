@@ -45,6 +45,16 @@ var SignaturePad = /** @class */ (function (_super) {
             this.initWebView(nextProps);
         }
     };
+    SignaturePad.prototype.componentDidUpdate = function (prevProps) {
+        var _a = this.props, penColor = _a.penColor, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth;
+        var reloadWebView = prevProps.penColor !== penColor
+            || prevProps.strokeMaxWidth !== strokeMaxWidth
+            || prevProps.strokeMinWidth !== strokeMinWidth
+            || react_native_1.Platform.OS === 'android';
+        if (reloadWebView && this.ref && typeof this.ref.reload === 'function') {
+            this.ref.reload();
+        }
+    };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);
         this.finishedStrokeBridge(base64DataUrl);
