@@ -92,6 +92,7 @@ var SignaturePad = /** @class */ (function (_super) {
      * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
      */
     SignaturePad.prototype.parseMessageFromWebViewNavigationChange = function (newUrl) {
+        console.log(newUrl);
         var hashUrlIndex = newUrl.lastIndexOf('#');
         if (hashUrlIndex !== -1) {
             var parameters = {};
