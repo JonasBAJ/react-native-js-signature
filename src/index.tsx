@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { NativeSyntheticEvent, StyleSheet, WebView, WebViewMessageEventData } from 'react-native'
+import { NativeSyntheticEvent, StyleSheet, WebView, WebViewMessageEventData, Platform } from 'react-native'
 import {
   application,
   errorHandler,
@@ -12,6 +12,7 @@ import { ISignaturePadProps, IState } from './types'
 import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
+  private ref: any | null = null
   private source: string = ''
   private reParameters: RegExp = /&(.*?)&/g
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
@@ -49,13 +50,15 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
   }
 
   public render() {
-    const { style } = this.props
-    console.log(1)
+    const { style, penColor } = this.props
+    console.log(penColor)
+    console.log(this.ref)
     return (
       <WebView
         style={style}
         javaScriptEnabled={true}
         source={{ html: this.source }}
+        ref={(r: any) => this.ref = r}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
