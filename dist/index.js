@@ -92,7 +92,6 @@ var SignaturePad = /** @class */ (function (_super) {
      * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
      */
     SignaturePad.prototype.parseMessageFromWebViewNavigationChange = function (newUrl) {
-        console.log(newUrl);
         var hashUrlIndex = newUrl.lastIndexOf('#');
         if (hashUrlIndex !== -1) {
             var parameters = {};
@@ -109,7 +108,6 @@ var SignaturePad = /** @class */ (function (_super) {
                     }
                     parameterMatch = this.parseParameters(decodedUrl);
                 }
-                console.log(parameters);
                 if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
                     console.warn({ parameters: parameters, hashUrl: hashUrl }, 'Received an unknown set of parameters from WebView');
                 }

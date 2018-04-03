@@ -115,7 +115,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
    * All parameters to the native world are passed via a hash url where every parameter is passed as &[ParameterName]<-[Content]&
    */
   private parseMessageFromWebViewNavigationChange(newUrl: string) {
-    console.log(newUrl)
     const hashUrlIndex = newUrl.lastIndexOf('#')
     if (hashUrlIndex !== -1) {
       const parameters: { [id: string]: string } = {}
@@ -134,8 +133,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
           }
           parameterMatch = this.parseParameters(decodedUrl)
         }
-
-        console.log(parameters)
 
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
           console.warn(
