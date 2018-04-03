@@ -3,7 +3,6 @@ import * as React from 'react';
 import { NativeSyntheticEvent, WebViewMessageEventData } from 'react-native';
 import { ISignaturePadProps, IState } from './types';
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
-    private ref;
     private source;
     private reParameters;
     private injectableJS;
@@ -16,7 +15,6 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
      */
     componentWillMount(): void;
     componentWillReceiveProps(nextProps: ISignaturePadProps): void;
-    componentDidUpdate(prevProps: ISignaturePadProps): void;
     onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>): void;
     render(): JSX.Element;
     private initWebView(props);

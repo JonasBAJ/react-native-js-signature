@@ -18,7 +18,6 @@ var SignaturePad = /** @class */ (function (_super) {
     __extends(SignaturePad, _super);
     function SignaturePad(props) {
         var _this = _super.call(this, props) || this;
-        _this.ref = null;
         _this.source = '';
         _this.reParameters = /&(.*?)&/g;
         _this.injectableJS = "" + injectableJsTemplate_1.nativeCodeExecutor + injectableJsTemplate_1.errorHandler + injectableJsTemplate_1.signaturePad;
@@ -45,31 +44,20 @@ var SignaturePad = /** @class */ (function (_super) {
             this.initWebView(nextProps);
         }
     };
-    SignaturePad.prototype.componentDidUpdate = function (prevProps) {
-        var _a = this.props, penColor = _a.penColor, strokeMaxWidth = _a.strokeMaxWidth, strokeMinWidth = _a.strokeMinWidth;
-        var reloadWebView = prevProps.penColor !== penColor
-            || prevProps.strokeMaxWidth !== strokeMaxWidth
-            || prevProps.strokeMinWidth !== strokeMinWidth;
-        if (reloadWebView && react_native_1.Platform.OS === 'android') {
-            this.forceUpdate();
-        }
-    };
     SignaturePad.prototype.onMessage = function (event) {
         var base64DataUrl = JSON.parse(event.nativeEvent.data);
         this.finishedStrokeBridge(base64DataUrl);
     };
     SignaturePad.prototype.render = function () {
         var _this = this;
-        var _a = this.props, style = _a.style, penColor = _a.penColor;
-        console.log(penColor);
-        console.log(this.ref);
-        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} ref={function (r) { return _this.ref = r; }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
+        var style = this.props.style;
+        return (<react_native_1.WebView style={style} javaScriptEnabled={true} source={{ html: this.source }} onMessage={function (e) { return _this.onMessage(e); }} onError={function (e) { return _this.jsErrorBridge(e); }} automaticallyAdjustContentInsets={false} onNavigationStateChange={function (e) { return _this.onNavigationChange(e); }}/>);
     };
     SignaturePad.prototype.initWebView = function (props) {
         var style = props.style, penColor = props.penColor, dotSize = props.dotSize, strokeMaxWidth = props.strokeMaxWidth, strokeMinWidth = props.strokeMinWidth, dataUrl = props.dataUrl;
         var backgroundColor = react_native_1.StyleSheet.flatten(style).backgroundColor;
-        this.injectableJS += injectableJsTemplate_1.application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl);
-        this.source = htmlTemplate_1.default(this.injectableJS);
+        var jsToInject = this.injectableJS + injectableJsTemplate_1.application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl);
+        this.source = htmlTemplate_1.default(jsToInject);
     };
     SignaturePad.prototype.onNavigationChange = function (event) {
         this.parseMessageFromWebViewNavigationChange(unescape(event.url));
@@ -99,7 +87,7 @@ var SignaturePad = /** @class */ (function (_super) {
             var parameters = {};
             var hashUrl = newUrl.substring(hashUrlIndex);
             var decodedUrl = decodeURIComponent(hashUrl);
-            var parameterMatch = this.parseParameters(hashUrl);
+            var parameterMatch = this.parseParameters(decodedUrl);
             if (parameterMatch instanceof Array && parameterMatch.length > 2) {
                 while (parameterMatch) {
                     // For example executeFunction=jsError or arguments=...
@@ -108,7 +96,7 @@ var SignaturePad = /** @class */ (function (_super) {
                     if (parameterPairSplit.length === 2) {
                         parameters[parameterPairSplit[0]] = parameterPairSplit[1];
                     }
-                    parameterMatch = this.parseParameters(hashUrl);
+                    parameterMatch = this.parseParameters(decodedUrl);
                 }
                 if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
                     console.warn({ parameters: parameters, hashUrl: hashUrl }, 'Received an unknown set of parameters from WebView');

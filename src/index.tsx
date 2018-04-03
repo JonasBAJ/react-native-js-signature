@@ -5,8 +5,6 @@ import {
   StyleSheet,
   WebView,
   WebViewMessageEventData,
-  Platform,
-  WebViewStatic
 } from 'react-native'
 import {
   application,
@@ -19,7 +17,6 @@ import { ISignaturePadProps, IState } from './types'
 import htmlTemplate from './htmlTemplate'
 
 export default class SignaturePad extends React.Component<ISignaturePadProps, IState> {
-  private ref: any | null = null
   private source: string = ''
   private reParameters: RegExp = /&(.*?)&/g
   private injectableJS: string = `${nativeCodeExecutor}${errorHandler}${signaturePad}`
@@ -51,31 +48,18 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
     }
   }
 
-  public componentDidUpdate(prevProps: ISignaturePadProps) {
-    const { penColor, strokeMaxWidth, strokeMinWidth } = this.props
-    const reloadWebView = prevProps.penColor !== penColor
-      || prevProps.strokeMaxWidth !== strokeMaxWidth
-      || prevProps.strokeMinWidth !== strokeMinWidth
-    if (reloadWebView && Platform.OS === 'android') {
-      this.forceUpdate()
-    }
-  }
-
   public onMessage(event: NativeSyntheticEvent<WebViewMessageEventData>) {
     const base64DataUrl = JSON.parse(event.nativeEvent.data)
     this.finishedStrokeBridge(base64DataUrl)
   }
 
   public render() {
-    const { style, penColor } = this.props
-    console.log(penColor)
-    console.log(this.ref)
+    const { style } = this.props
     return (
       <WebView
         style={style}
         javaScriptEnabled={true}
         source={{ html: this.source }}
-        ref={(r: any) => this.ref = r}
         onMessage={e => this.onMessage(e)}
         onError={e => this.jsErrorBridge(e)}
         automaticallyAdjustContentInsets={false}
@@ -87,8 +71,9 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
   private initWebView(props: ISignaturePadProps) {
     const { style, penColor, dotSize, strokeMaxWidth, strokeMinWidth, dataUrl } = props
     const { backgroundColor } = StyleSheet.flatten(style)
-    this.injectableJS += application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl)
-    this.source = htmlTemplate(this.injectableJS)
+    const jsToInject: string =
+      this.injectableJS + application(strokeMinWidth, strokeMaxWidth, dotSize, penColor, backgroundColor, dataUrl)
+    this.source = htmlTemplate(jsToInject)
   }
 
   private onNavigationChange(event: any) {
@@ -122,7 +107,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
       const parameters: { [id: string]: string } = {}
       const hashUrl: string = newUrl.substring(hashUrlIndex)
       const decodedUrl: string = decodeURIComponent(hashUrl)
-      let parameterMatch: RegExpExecArray | null = this.parseParameters(hashUrl)
+      let parameterMatch: RegExpExecArray | null = this.parseParameters(decodedUrl)
 
       if (parameterMatch instanceof Array && parameterMatch.length > 2) {
         while (parameterMatch) {
@@ -133,7 +118,7 @@ export default class SignaturePad extends React.Component<ISignaturePadProps, IS
           if (parameterPairSplit.length === 2) {
             parameters[parameterPairSplit[0]] = parameterPairSplit[1]
           }
-          parameterMatch = this.parseParameters(hashUrl)
+          parameterMatch = this.parseParameters(decodedUrl)
         }
 
         if (!this.attemptToExecuteNativeFunctionFromWebViewMessage(parameters)) {
